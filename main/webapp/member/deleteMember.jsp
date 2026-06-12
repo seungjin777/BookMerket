@@ -1,0 +1,24 @@
+<%@ page contentType="text/html; charset=utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql"%>
+<%
+	String sessionId = (String) session.getAttribute("sessionId");
+%>
+<sql:setDataSource var="dataSource"
+	url="jdbc:mysql://localhost:3306/BookMarketDB"
+	driver="com.mysql.jdbc.Driver" user="root" password="1234" />
+
+<sql:update dataSource="${dataSource}" var="resultSet">
+   DELETE FROM member WHERE id = ?
+   <sql:param value="<%=sessionId%>" />
+</sql:update>
+
+<c:choose>
+	<c:when test="${resultSet>=1}">
+		<c:import var="url" url="logoutMember.jsp" />
+		<c:redirect url="resultMember.jsp?msg=3" />
+	</c:when>
+	<c:otherwise>
+		<c:redirect url="updateMember.jsp?error=2" />
+	</c:otherwise>
+</c:choose>
